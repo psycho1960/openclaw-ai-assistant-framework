@@ -134,5 +134,47 @@
       "preview": "github.md\n222.6k\n1\n2\n3\n4\nexport github\nfrom \"openclaw/openclaw\"\nGitHub operations via `gh` CLI: issu"
     },
     "details": "Discover and explore AI skills built by the community."
+  },
+  {
+    "timestamp": "2026-02-25T02:00:03.053Z",
+    "hour": 10,
+    "category": "🎬 视频/图片",
+    "searchQuery": "generate",
+    "skillLearned": {
+      "name": "nano-banana-pro",
+      "stars": "222.6k",
+      "link": "https://skillsmp.com/skills/openclaw-openclaw-skills-nano-banana-pro-skill-md",
+      "path": "openclaw-openclaw-skills-nano-banana-pro-skill-md",
+      "preview": "nano-banana-pro.md\n222.6k\n1\n2\n3\n4\nexport nano-banana-pro\nfrom \"openclaw/openclaw\"\nGenerate or edit i"
+    },
+    "details": "This website uses a security service to protect against malicious bots. This page is displayed while the website verifies you are not a bot."
+  },
+  {
+    "timestamp": "2026-02-25T02:00:07.318Z",
+    "hour": 10,
+    "category": "🎬 视频/图片",
+    "searchQuery": "frame",
+    "skillLearned": {
+      "name": "camsnap",
+      "stars": "222.6k",
+      "link": "https://skillsmp.com/skills/openclaw-openclaw-skills-camsnap-skill-md",
+      "path": "openclaw-openclaw-skills-camsnap-skill-md",
+      "preview": "camsnap.md\n222.6k\n1\n2\n3\n4\nexport camsnap\nfrom \"openclaw/openclaw\"\nCapture frames or clips from RTSP/"
+    },
+    "details": "Skip to main content\nready\n~/\nskillsmp\n$\nai\n--search\n$\ncd\n/categories\n$\nwatch\nstats\n$\nman\ndocs\n$\napi\n--docs\nEN"
+  },
+  {
+    "timestamp": "2026-02-25T02:03:34.055Z",
+    "hour": 10,
+    "category": "🎬 视频/图片",
+    "searchQuery": "ai",
+    "skillLearned": {
+      "name": "prompt-lookup",
+      "stars": "147.2k",
+      "link": "https://skillsmp.com/skills/f-prompts-chat-plugins-claude-prompts-chat-skills-prompt-lookup-skill-md",
+      "path": "f-prompts-chat-plugins-claude-prompts-chat-skills-prompt-lookup-skill-md",
+      "preview": "prompt-lookup.md\n147.2k\n1\n2\n3\n4\nexport prompt-lookup\nfrom \"f/prompts.chat\"\nActivates when the user a"
+    },
+    "details": "// Activates when the user asks about AI prompts, needs prompt templates, wants to search for prompts, or mentions prompts.chat. Use for discovering, retrieving, and improving prompts."
   }
 ]
