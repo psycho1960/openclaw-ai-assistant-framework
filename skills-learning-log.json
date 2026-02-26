@@ -911,5 +911,39 @@
       "link": "https://skillsmp.com/skills/openclaw-openclaw-extensions-feishu-skills-feishu-drive-skill-md",
       "description": "skillsmp.com\nPerforming security verification\n\nThis website uses a security service to protect against malicious bots. This page is displayed while the website verifies you are not a bot."
     }
+  },
+  {
+    "timestamp": "2026-02-26T20:00:02.865197",
+    "hour": 20,
+    "category": "✍️ 内容创作",
+    "skillLearned": {
+      "name": "beepctl",
+      "url": "https://github.com/openclaw/skills/tree/main/skills/blqke/beepctl/SKILL.md",
+      "description": "Use when sending messages, searching chats, or managing conversations",
+      "source": "awesome-openclaw-skills"
+    },
+    "details": "# beepctl\n\n## 类别\n✍️ 内容创作\n\n## 描述\nUse when sending messages, searching chats, or managing conversations\n\n## 来源\n官方技能库: https://github.com/VoltAgent/awesome-openclaw-skills\n\n## 安装方式\n```bash\nnpx clawhub@latest install beepctl\n```\n\n或者直接复制技能文件夹到:\n- Global: `~/.openclaw/skills/`\n- Workspace: `<project>/skills/`\n\n## 官方链接\nhttps://github.com/openclaw/skills/tree/main/skills/blqke/beepctl/SKILL.md\n"
+  },
+  {
+    "timestamp": "2026-02-26T12:00:51.128Z",
+    "hour": 20,
+    "category": "video_image",
+    "skillLearned": {
+      "name": "discord.md\n227.3k\n1\n2\n3\n4\nexport discord\nfrom \"openclaw/openclaw\"\nDiscord ops via the message tool (channel=discord).\n2026-02-16",
+      "stars": "",
+      "link": "https://skillsmp.com/skills/openclaw-openclaw-skills-discord-skill-md",
+      "description": "skillsmp.com\nPerforming security verification\n\nThis website uses a security service to protect against malicious bots. This page is displayed while the website verifies you are not a bot."
+    }
+  },
+  {
+    "timestamp": "2026-02-26T12:00:54.831Z",
+    "hour": 20,
+    "category": "video_image",
+    "skillLearned": {
+      "name": "sherpa-onnx-tts.md\n227.3k\n1\n2\n3\n4\nexport sherpa-onnx-tts\nfrom \"openclaw/openclaw\"\nLocal text-to-speech via sherpa-onnx (offline, no cloud)\n2026-02-16",
+      "stars": "",
+      "link": "https://skillsmp.com/skills/openclaw-openclaw-skills-sherpa-onnx-tts-skill-md",
+      "description": "skillsmp.com\nPerforming security verification\n\nThis website uses a security service to protect against malicious bots. This page is displayed while the website verifies you are not a bot."
+    }
   }
 ]
