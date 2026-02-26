@@ -564,5 +564,47 @@
       "category": "other"
     },
     "details": ""
+  },
+  {
+    "timestamp": "2026-02-26T04:52:23.528Z",
+    "hour": 12,
+    "category": "📦 其他",
+    "skillLearned": {
+      "name": "openclaw openclaw skills discord skill md",
+      "path": "openclaw-openclaw-skills-discord-skill-md",
+      "link": "https://skillsmp.com/skills/openclaw-openclaw-skills-discord-skill-md",
+      "stars": "227.3k",
+      "description": "from \"openclaw/openclaw\"",
+      "fullText": "discord.md\n227.3k\n1\n2\n3\n4\nexport discord\nfrom \"openclaw/openclaw\"\nDiscord ops via the message tool (channel=discord).\n2026-02-16",
+      "category": "other"
+    },
+    "details": ""
+  },
+  {
+    "timestamp": "2026-02-26T04:53:14.648Z",
+    "hour": 12,
+    "category": "📦 其他",
+    "skillLearned": {
+      "name": "openclaw openclaw skills sherpa onnx tts skill md",
+      "path": "openclaw-openclaw-skills-sherpa-onnx-tts-skill-md",
+      "link": "https://skillsmp.com/skills/openclaw-openclaw-skills-sherpa-onnx-tts-skill-md",
+      "stars": "227.3k",
+      "description": "export sherpa-onnx-tts",
+      "fullText": "sherpa-onnx-tts.md\n227.3k\n1\n2\n3\n4\nexport sherpa-onnx-tts\nfrom \"openclaw/openclaw\"\nLocal text-to-speech via sherpa-onnx (offline, no cloud)\n2026-02-16",
+      "category": "other"
+    },
+    "details": ""
+  },
+  {
+    "timestamp": "2026-02-26T04:54:27.218Z",
+    "hour": 12,
+    "category": "🎬 视频/图片",
+    "skillLearned": {
+      "name": "未找到新技能",
+      "stars": "-",
+      "link": "",
+      "path": ""
+    },
+    "details": ""
   }
 ]
