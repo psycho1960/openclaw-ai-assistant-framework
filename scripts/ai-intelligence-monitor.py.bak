@@ -12,21 +12,6 @@ import sys
 import os
 import time
 from collections import OrderedDict
-import traceback
-
-# 设置日志文件
-LOG_FILE = '/home/zzyuzhangxing/.openclaw/workspace/logs/ai_intelligence.log'
-
-def log(msg, level='INFO'):
-    """记录日志"""
-    timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-    log_msg = f"[{timestamp}] [{level}] {msg}"
-    print(log_msg)
-    try:
-        with open(LOG_FILE, 'a', encoding='utf-8') as f:
-            f.write(log_msg + '\n')
-    except:
-        pass
 
 # B站搜索API
 BILIBILI_SEARCH_API = "https://api.bilibili.com/x/web-interface/search/type"
@@ -107,14 +92,9 @@ def search_bilibili(keyword, page=1, page_size=20):
         if data.get('code') == 0:
             return data.get('data', {}).get('result', [])
         else:
-            log(f"搜索'{keyword}'失败: {data.get('message', '未知错误')}", 'WARN')
-    except requests.exceptions.HTTPError as e:
-        if e.response.status_code == 412:
-            log(f"搜索'{keyword}'触发反爬(412)，跳过", 'WARN')
-        else:
-            log(f"搜索'{keyword}'HTTP错误: {e}", 'ERROR')
+            print(f"  搜索'{keyword}'失败: {data.get('message', '未知错误')}")
     except Exception as e:
-        log(f"搜索'{keyword}'出错: {e}", 'ERROR')
+        print(f"  搜索'{keyword}'出错: {e}")
     
     return []
 
@@ -377,12 +357,14 @@ def generate_report(videos, category_mentions, suggestions, search_stats):
 def main():
     """主函数"""
     print("=" * 70)
-    log("📡 泛AI情报监控 - 全站搜索版")
-    log("=" * 70)
+    print("📡 泛AI情报监控 - 全站搜索版")
+    print("=" * 70)
+    print()
     
-    log(f"🕐 监控时间: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-    log(f"🎯 关键词数量: {len(ALL_KEYWORDS)} 个")
-    log(f"🔍 搜索策略: 全站覆盖 + 多关键词并行")
+    print(f"🕐 监控时间: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+    print(f"🎯 关键词数量: {len(ALL_KEYWORDS)} 个")
+    print(f"🔍 搜索策略: 全站覆盖 + 多关键词并行")
+    print()
     
     all_videos = []
     search_stats = {}
@@ -394,38 +376,39 @@ def main():
         'AIGC', '数字人', 'AI视频', 'AI绘画', 'Copilot', 'Cursor'
     ]
     
-    log("🔍 开始搜索核心关键词...")
+    print("🔍 开始搜索核心关键词...")
     for i, keyword in enumerate(priority_keywords, 1):
-        log(f"[{i}/{len(priority_keywords)}] 搜索: '{keyword}'...")
+        print(f"  [{i}/{len(priority_keywords)}] 搜索: '{keyword}'", end=' ')
         results = search_bilibili(keyword, page=1, page_size=20)
         
         if results:
             videos = parse_search_result(results)
             all_videos.extend(videos)
             search_stats[keyword] = len(videos)
-            log(f"  ✅ 找到 {len(videos)} 条")
+            print(f"✅ 找到 {len(videos)} 条")
         else:
-            log(f"  ⚠️ 无结果")
+            print(f"⚠️ 无结果")
         
         # 避免请求过快（B站有反爬机制）
         time.sleep(2)
     
-    log(f"📊 原始数据: {len(all_videos)} 条视频")
+    print()
+    print(f"📊 原始数据: {len(all_videos)} 条视频")
     
     # 去重
-    log("🔄 正在去重...")
+    print("🔄 正在去重...")
     unique_videos = deduplicate_videos(all_videos)
-    log(f"✅ 去重后: {len(unique_videos)} 条视频")
+    print(f"✅ 去重后: {len(unique_videos)} 条视频")
     
     # 按热度排序
     unique_videos.sort(key=calculate_hot_score, reverse=True)
     
     # 分析趋势
-    log("📈 正在分析趋势...")
+    print("📈 正在分析趋势...")
     category_mentions, suggestions = analyze_trends(unique_videos)
     
     # 生成报告
-    log("📝 正在生成报告...")
+    print("📝 正在生成报告...")
     report = generate_report(unique_videos, category_mentions, suggestions, search_stats)
     
     # 保存报告
@@ -439,37 +422,34 @@ def main():
     report_file = f"{data_dir}/daily_report_{today}_{timestamp}.md"
     with open(report_file, 'w', encoding='utf-8') as f:
         f.write(report)
-    log(f"✅ 报告已保存: {report_file}")
+    print(f"✅ 报告已保存: {report_file}")
     
     # 保存最新版本
     latest_file = f"{data_dir}/daily_report_latest.md"
     with open(latest_file, 'w', encoding='utf-8') as f:
         f.write(report)
-    log(f"✅ 最新报告: {latest_file}")
+    print(f"✅ 最新报告: {latest_file}")
     
     # 输出摘要
-    log("=" * 70)
-    log("📊 监控摘要")
-    log("=" * 70)
-    log(f"📹 发现视频: {len(unique_videos)} 条")
-    log(f"👁️  总播放量: {sum(v.get('view', 0) for v in unique_videos):,}")
-    log(f"❤️  总点赞数: {sum(v.get('like', 0) for v in unique_videos):,}")
-    log(f"💡 选题建议: {len(suggestions)} 条")
+    print()
+    print("=" * 70)
+    print("📊 监控摘要")
+    print("=" * 70)
+    print(f"📹 发现视频: {len(unique_videos)} 条")
+    print(f"👁️  总播放量: {sum(v.get('view', 0) for v in unique_videos):,}")
+    print(f"❤️  总点赞数: {sum(v.get('like', 0) for v in unique_videos):,}")
+    print(f"💡 选题建议: {len(suggestions)} 条")
+    print()
     
     # Top 3 快速预览
-    log("🔥 Top 3 AI热门视频:")
+    print("🔥 Top 3 AI热门视频:")
     for i, v in enumerate(unique_videos[:3], 1):
-        log(f"  {i}. {v['title'][:50]}... ({v['view']:,}播放)")
+        print(f"  {i}. {v['title'][:50]}... ({v['view']:,}播放)")
     
-    log("=" * 70)
-    log("✅ 全站AI情报监控完成!")
-    log("=" * 70)
+    print()
+    print("=" * 70)
+    print("✅ 全站AI情报监控完成!")
+    print("=" * 70)
 
 if __name__ == "__main__":
-    try:
-        main()
-        sys.exit(0)
-    except Exception as e:
-        log(f"❌ 监控脚本异常: {e}", 'ERROR')
-        traceback.print_exc()
-        sys.exit(1)
+    main()

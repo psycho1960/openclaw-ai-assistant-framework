@@ -8,6 +8,22 @@ import json
 import os
 import subprocess
 from datetime import datetime
+import sys
+import traceback
+
+# 设置日志文件
+LOG_FILE = '/home/zzyuzhangxing/.openclaw/workspace/logs/daily_report.log'
+
+def log(msg, level='INFO'):
+    """记录日志"""
+    timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    log_msg = f"[{timestamp}] [{level}] {msg}"
+    print(log_msg)
+    try:
+        with open(LOG_FILE, 'a', encoding='utf-8') as f:
+            f.write(log_msg + '\n')
+    except:
+        pass
 
 # 飞书配置
 FEISHU_WIKI_TOKEN = 'FcvTwZTTyiCZ30kNLRVchfiwnKd'
@@ -190,23 +206,20 @@ def send_to_telegram(report_file, summary_text):
             text=True,
             cwd='/home/zzyuzhangxing/.openclaw/workspace'
         )
-        print("✅ Telegram发送完成")
+        log("✅ Telegram发送完成")
         return True
     except Exception as e:
-        print(f"⚠️ Telegram发送失败: {e}")
+        log(f"⚠️ Telegram发送失败: {e}", 'WARN')
         return False
 
 def sync_to_feishu(content, title):
     """同步到飞书Wiki"""
     try:
-        # 由于API限流，我们先保存到本地，稍后手动同步
-        # 或者可以在这里调用feishu_doc append
-        
-        print(f"⏳ 飞书同步待处理: {title}")
-        print(f"   目标: https://acnh7t5exjqh.feishu.cn/wiki/FcvTwZTTyiCZ30kNLRVchfiwnKd")
+        log(f"⏳ 飞书同步待处理: {title}")
+        log(f"   目标: https://acnh7t5exjqh.feishu.cn/wiki/FcvTwZTTyiCZ30kNLRVchfiwnKd")
         
         # 记录同步日志
-        sync_log = '/home/zzyuzhangxing/.openclaw/workspace/backup/system/logs/feishu_sync.log'
+        sync_log = '/home/zzyuzhangxing/.openclaw/workspace/logs/feishu_sync.log'
         os.makedirs(os.path.dirname(sync_log), exist_ok=True)
         
         with open(sync_log, 'a') as f:
@@ -219,24 +232,22 @@ def sync_to_feishu(content, title):
         
         return True
     except Exception as e:
-        print(f"❌ 飞书同步失败: {e}")
+        log(f"❌ 飞书同步失败: {e}", 'ERROR')
         return False
 
 def main():
     """主函数"""
-    print("=" * 60)
-    print("📊 统一每日汇报生成")
-    print("=" * 60)
-    print()
+    log("=" * 60)
+    log("📊 统一每日汇报生成")
+    log("=" * 60)
     
     today = datetime.now().strftime('%Y-%m-%d')
     timestamp = datetime.now().strftime('%H:%M:%S')
     
-    print(f"🕐 生成时间: {today} {timestamp}")
-    print()
+    log(f"🕐 生成时间: {today} {timestamp}")
     
     # 生成汇报
-    print("📝 正在生成每日汇报...")
+    log("📝 正在生成每日汇报...")
     report = generate_daily_summary()
     
     # 保存到本地
@@ -246,7 +257,7 @@ def main():
     with open(report_file, 'w', encoding='utf-8') as f:
         f.write(report)
     
-    print(f"✅ 本地报告已保存: {report_file}")
+    log(f"✅ 本地报告已保存: {report_file}")
     
     # 保存最新报告
     latest_file = f"{REPORT_DIR}/daily_report_latest.md"
@@ -254,22 +265,28 @@ def main():
         f.write(report)
     
     # 同步到飞书
-    print("\n🔄 正在同步到飞书...")
+    log("🔄 正在同步到飞书...")
     sync_to_feishu(report, f"每日汇报 - {today}")
     
     # 发送到Telegram
-    print("\n📱 正在发送到Telegram...")
-    send_to_telegram(report_file, summary)
+    log("📱 正在发送到Telegram...")
+    send_to_telegram(report_file, report[:500])
     
     # 输出摘要
-    print("\n" + "=" * 60)
-    print("📋 汇报摘要")
-    print("=" * 60)
-    print(f"📅 日期: {today}")
-    print(f"📁 本地文件: {report_file}")
-    print(f"🔗 飞书链接: https://acnh7t5exjqh.feishu.cn/wiki/FcvTwZTTyiCZ30kNLRVchfiwnKd")
-    print(f"✅ 状态: 本地已保存，飞书同步待处理")
-    print("=" * 60)
+    log("=" * 60)
+    log("📋 汇报摘要")
+    log("=" * 60)
+    log(f"📅 日期: {today}")
+    log(f"📁 本地文件: {report_file}")
+    log(f"🔗 飞书链接: https://acnh7t5exjqh.feishu.cn/wiki/FcvTwZTTyiCZ30kNLRVchfiwnKd")
+    log(f"✅ 状态: 本地已保存，飞书同步待处理")
+    log("=" * 60)
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+        sys.exit(0)
+    except Exception as e:
+        log(f"❌ 日报生成异常: {e}", 'ERROR')
+        traceback.print_exc()
+        sys.exit(1)
