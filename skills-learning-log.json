@@ -1149,5 +1149,17 @@
       "source": "awesome-openclaw-skills"
     },
     "details": "# conventional-commits\n\n## \u7c7b\u522b\n\u270d\ufe0f \u5185\u5bb9\u521b\u4f5c\n\n## \u63cf\u8ff0\nFormat commit messages using the Conventional\n\n## \u6765\u6e90\n\u5b98\u65b9\u6280\u80fd\u5e93: https://github.com/VoltAgent/awesome-openclaw-skills\n\n## \u5b89\u88c5\u65b9\u5f0f\n```bash\nnpx clawhub@latest install conventional-commits\n```\n\n\u6216\u8005\u76f4\u63a5\u590d\u5236\u6280\u80fd\u6587\u4ef6\u5939\u5230:\n- Global: `~/.openclaw/skills/`\n- Workspace: `<project>/skills/`\n\n## \u5b98\u65b9\u94fe\u63a5\nhttps://github.com/openclaw/skills/tree/main/skills/bastos/conventional-commits/SKILL.md\n"
+  },
+  {
+    "timestamp": "2026-02-27T11:00:03.252871",
+    "hour": 11,
+    "category": "\ud83d\udd27 \u5f00\u53d1\u5de5\u5177",
+    "skillLearned": {
+      "name": "kilocli-coding-agent",
+      "url": "https://github.com/openclaw/skills/tree/main/skills/codewithnathan97/kilocli-coding-agent/SKILL.md",
+      "description": "Run Kilo CLI via background process",
+      "source": "awesome-openclaw-skills"
+    },
+    "details": "# kilocli-coding-agent\n\n## \u7c7b\u522b\n\ud83d\udd27 \u5f00\u53d1\u5de5\u5177\n\n## \u63cf\u8ff0\nRun Kilo CLI via background process\n\n## \u6765\u6e90\n\u5b98\u65b9\u6280\u80fd\u5e93: https://github.com/VoltAgent/awesome-openclaw-skills\n\n## \u5b89\u88c5\u65b9\u5f0f\n```bash\nnpx clawhub@latest install kilocli-coding-agent\n```\n\n\u6216\u8005\u76f4\u63a5\u590d\u5236\u6280\u80fd\u6587\u4ef6\u5939\u5230:\n- Global: `~/.openclaw/skills/`\n- Workspace: `<project>/skills/`\n\n## \u5b98\u65b9\u94fe\u63a5\nhttps://github.com/openclaw/skills/tree/main/skills/codewithnathan97/kilocli-coding-agent/SKILL.md\n"
   }
 ]
