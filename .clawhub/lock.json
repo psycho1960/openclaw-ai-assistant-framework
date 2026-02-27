@@ -12,6 +12,10 @@
     "terraform": {
       "version": "1.0.0",
       "installedAt": 1772215573591
+    },
+    "model-usage": {
+      "version": "1.0.0",
+      "installedAt": 1772221566654
     }
   }
 }

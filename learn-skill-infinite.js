@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 /**
- * 每小时技能学习脚本 - ClawHub CLI版
- * 使用 clawhub CLI 安装新技能
+ * 无限技能学习脚本 - 从ClawHub动态搜索并安装技能
  */
 
 const { execSync } = require('child_process');
@@ -10,7 +9,16 @@ const path = require('path');
 
 const WORKSPACE = path.join(process.env.HOME, '.openclaw/workspace');
 const LOG_FILE = path.join(WORKSPACE, 'learn-cron.log');
-const STATUS_FILE = path.join(WORKSPACE, '.skill-install-status-v2.json');
+const STATUS_FILE = path.join(WORKSPACE, '.skill-install-infinite.json');
+
+// 搜索关键词列表（覆盖不同领域）
+const SEARCH_KEYWORDS = [
+  'agent', 'automation', 'ai', 'data', 'web', 'api', 'cloud',
+  'github', 'slack', 'discord', 'twitter', 'email', 'calendar',
+  'search', 'image', 'video', 'audio', 'document', 'file',
+  'database', 'security', 'monitor', 'report', 'analysis',
+  'workflow', 'integration', 'notification', 'schedule', 'task'
+];
 
 function log(msg) {
   const timestamp = new Date().toLocaleString('zh-CN');
@@ -22,11 +30,11 @@ function log(msg) {
 function getInstalledSkills() {
   const skillsDir = path.join(WORKSPACE, 'skills');
   if (!fs.existsSync(skillsDir)) return new Set();
-  
+
   const skills = fs.readdirSync(skillsDir, { withFileTypes: true })
     .filter(d => d.isDirectory())
     .map(d => d.name);
-  
+
   return new Set(skills);
 }
 
@@ -35,149 +43,157 @@ function getStatus() {
     try {
       return JSON.parse(fs.readFileSync(STATUS_FILE, 'utf8'));
     } catch (e) {
-      return { installed: [], current_index: 0 };
+      return { tried: [], keywordIndex: 0 };
     }
   }
-  return { installed: [], current_index: 0 };
+  return { tried: [], keywordIndex: 0 };
 }
 
 function saveStatus(status) {
   fs.writeFileSync(STATUS_FILE, JSON.stringify(status, null, 2));
 }
 
-function searchClawhubSkills() {
+function searchSkills(keyword) {
   try {
-    // 尝试搜索热门技能
-    const result = execSync('clawhub search --json 2>/dev/null || echo "[]"', {
+    const result = execSync(`clawhub search "${keyword}" --limit 50 2>&1`, {
       cwd: WORKSPACE,
       encoding: 'utf8',
       timeout: 30000
     });
-    
-    try {
-      return JSON.parse(result);
-    } catch {
-      return [];
+
+    // 解析文本输出，提取技能名称
+    const lines = result.split('\n');
+    const skills = [];
+
+    for (const line of lines) {
+      // 匹配格式: "skill-name  Description  (score)"
+      const match = line.match(/^([a-z0-9-]+)\s{2,}/);
+      if (match && match[1] && !match[1].includes('Searching')) {
+        skills.push(match[1]);
+      }
     }
+
+    return skills;
   } catch (e) {
-    log(`⚠️ 搜索失败: ${e.message}`);
+    log(`⚠️ 搜索失败 (${keyword}): ${e.message}`);
     return [];
   }
 }
 
-function installSkill(skillName, retryCount = 0) {
+function installSkill(skillName) {
   try {
     log(`📦 安装: ${skillName}`);
-    
+
     const result = execSync(`clawhub install ${skillName} 2>&1`, {
       cwd: WORKSPACE,
       encoding: 'utf8',
       timeout: 60000
     });
-    
+
     log(`✅ 安装成功: ${skillName}`);
-    return { success: true, output: result };
+    return { success: true };
   } catch (e) {
     const errorMsg = e.message || '';
-    
-    // Rate limit - 重试
-    if (errorMsg.includes('Rate limit') && retryCount < 3) {
-      log(`⏳ Rate limit，等待30秒后重试... (${retryCount + 1}/3)`);
-      execSync('sleep 30');
-      return installSkill(skillName, retryCount + 1);
-    }
-    
-    // 已安装
+
+    // 跳过已知问题
     if (errorMsg.includes('already installed') || errorMsg.includes('已存在')) {
       log(`⚠️ 已安装: ${skillName}`);
       return { success: true, alreadyInstalled: true };
     }
-    
-    // 技能不存在
+
     if (errorMsg.includes('not found') || errorMsg.includes('Skill not found')) {
       log(`⚠️ 技能不存在: ${skillName}`);
       return { success: false, notFound: true };
     }
-    
-    // 安全标记
+
     if (errorMsg.includes('VirusTotal') || errorMsg.includes('suspicious')) {
       log(`⚠️ 安全标记跳过: ${skillName}`);
       return { success: false, securityFlag: true };
     }
-    
+
+    if (errorMsg.includes('Rate limit')) {
+      log(`⏳ Rate limit，跳过: ${skillName}`);
+      return { success: false, rateLimit: true };
+    }
+
     log(`❌ 安装失败: ${skillName} - ${errorMsg.substring(0, 100)}`);
     return { success: false, error: errorMsg };
   }
 }
 
-// 推荐技能列表（从ClawHub实际存在的技能）
-const RECOMMENDED_SKILLS = [
-  'agent-browser', 'automation-workflows', 'bird-twitter',
-  'brave-search', 'calendar', 'find-skills',
-  'github', 'gmail', 'gog', 'home-assistant',
-  'image', 'mcp-skill', 'notion', 'obsidian',
-  'planning-with-files', 'proactive-agent', 'remotion',
-  'self-improving-agent', 'skill-creator', 'skill-vetter',
-  'spotify', 'tavily-search', 'twitter-post',
-  'video-prompt-engineering', 'x-twitter',
-  // 开发相关
-  'docker', 'k8s', 'terraform',
-  // 数据处理
-  'model-usage', 'summarize',
-  // 注意：以下技能被标记为可疑，需要手动确认
-  // 'aws', 'tweet-writer'
-  // 注意：以下技能不存在
-  // 'polars', 'eda', 'chinese-writing'
-];
-
 async function main() {
   log('');
   log('============================================================');
-  log('🚀 技能学习 - ClawHub CLI版');
+  log('🚀 无限技能学习 - ClawHub动态搜索版');
   log('============================================================');
-  
+
   const installed = getInstalledSkills();
   const status = getStatus();
-  
+
   log(`📊 当前已安装: ${installed.size} 个技能`);
-  
-  // 找出未安装的技能
-  const toInstall = RECOMMENDED_SKILLS.filter(s => !installed.has(s));
-  
-  if (toInstall.length === 0) {
-    log('✅ 所有推荐技能已安装完毕！');
-    log('🎉 技能库已满，停止学习。');
+
+  // 轮询搜索关键词
+  const keyword = SEARCH_KEYWORDS[status.keywordIndex % SEARCH_KEYWORDS.length];
+  log(`🔍 搜索关键词: ${keyword}`);
+
+  // 搜索技能
+  const foundSkills = searchSkills(keyword);
+  log(`📚 找到 ${foundSkills.length} 个技能`);
+
+  if (foundSkills.length === 0) {
+    log('⚠️ 未找到技能，尝试下一个关键词');
+    status.keywordIndex++;
+    saveStatus(status);
     return;
   }
-  
-  log(`📚 待安装技能: ${toInstall.length} 个`);
-  
-  // 安装前5个
-  const batch = toInstall.slice(0, 5);
+
+  // 过滤未安装和未尝试的技能
+  const toInstall = foundSkills.filter(s =>
+    !installed.has(s) && !status.tried.includes(s)
+  );
+
+  if (toInstall.length === 0) {
+    log('✅ 当前关键词下的技能已全部处理');
+    status.keywordIndex++;
+    saveStatus(status);
+    return;
+  }
+
+  log(`🎯 待安装: ${toInstall.length} 个技能`);
+
+  // 安装前3个技能
+  const batch = toInstall.slice(0, 3);
   let successCount = 0;
-  
+
   for (const skill of batch) {
     const result = installSkill(skill);
     if (result.success) {
       successCount++;
-      status.installed.push({
-        name: skill,
-        time: new Date().toISOString(),
-        note: result.alreadyInstalled ? '已存在' : '新安装'
-      });
     }
-    
+    status.tried.push(skill);
+
     // 间隔5秒，避免rate limit
     await new Promise(r => setTimeout(r, 5000));
   }
-  
-  status.current_index += batch.length;
+
+  // 定期清理tried列表（保留最近1000个）
+  if (status.tried.length > 1000) {
+    status.tried = status.tried.slice(-500);
+  }
+
+  // 如果当前关键词安装成功，下次继续用这个关键词
+  // 否则切换到下一个关键词
+  if (successCount === 0) {
+    status.keywordIndex++;
+  }
+
   saveStatus(status);
-  
+
   log('');
   log('============================================================');
   log(`✅ 完成! 成功安装: ${successCount}/${batch.length}`);
   log(`📊 总计: ${installed.size + successCount} 个技能`);
+  log(`🔍 下次关键词: ${SEARCH_KEYWORDS[status.keywordIndex % SEARCH_KEYWORDS.length]}`);
   log('============================================================');
 }
 
