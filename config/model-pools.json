@@ -4,7 +4,7 @@
     "fast": {
       "name": "高速池",
       "description": "简单日常会话、要求响应快、token便宜",
-      "primary": "qwen3.5-flash",
+      "primary": "glm-4.7",
       "fallback": "qwen3.5-flash",
       "use_cases": ["闲聊", "简单查询", "快速响应"],
       "keywords": ["快速", "简单", "闲聊"]
@@ -12,16 +12,16 @@
     "smart": {
       "name": "智能池",
       "description": "大型复杂任务、高强度推理、要求模型能力强",
-      "primary": "qwen3-max",
-      "fallback": "qwen3-max",
+      "primary": "glm-5",
+      "fallback": "MiniMax-M2.5",
       "use_cases": ["复杂推理", "代码编写", "策略制定", "深度分析"],
       "keywords": ["推理", "分析", "编程", "复杂"]
     },
     "text": {
       "name": "文本池",
       "description": "处理文本相关任务、推理能力+上下文处理",
-      "primary": "qwen3.5-plus",
-      "fallback": "qwen3.5-plus",
+      "primary": "glm-5",
+      "fallback": "kimi-k2.5",
       "use_cases": ["长文本处理", "文档分析", "内容创作"],
       "keywords": ["文档", "长文本", "内容", "写作"]
     },
